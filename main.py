@@ -1,0 +1,32 @@
+import requests
+import re
+import urllib
+
+# global variable
+token     = "<telegram_token>"
+messageID = "<group/messageID>"
+typeText  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
+headers = {
+    "accept": "application/json",
+    "content-type": "application/json",
+    "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SAMSUNG-SM-N900A Build/LRX21V)",
+}
+
+def getPort():
+    global ngrok_port
+    f = open('/var/log/ngrok.log', 'r')
+    ngrok_port = re.findall("\d.tcp.\w\w.ngrok.io:.{5}$", f.read(), re.DOTALL) # Regex for find ngrok.io pattern
+    return ngrok_port
+
+def sendMessages():
+    messages = f"""Ngrok New Tunnel: ✅✅✅
+<code>{ngrok_port}</code> """
+    url_encode = urllib.parse.quote_plus(str(messages))
+    print("Send this messages to telegram\n",messages)
+    response = requests.post(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={messageID}&text={url_encode}&parse_mode={typeText}", headers=headers)
+    print(response.text)
+
+
+if __name__ == "__main__":
+    getPort()
+    sendMessages()
