@@ -15,8 +15,8 @@ $ cp ngrok.yaml $HOME/.config/ngrok/ngrok.yml
 
 3. copy ngrok service, and running ngrok service
 ```bash
-$ sudo cp ngrok.service /etc/systemd/system/
-$ sudo systemctl daemon-reload && sudo systemctl enable --now ngrok.service
+$ sudo cp ngrok.service ngrok-listener.service /etc/systemd/system/
+$ sudo systemctl daemon-reload && sudo systemctl enable --now ngrok.service && sudo systemctl enable --now ngrok.service ngrok-listener.service
 ```
 
 4. running bot
