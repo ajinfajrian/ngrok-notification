@@ -9,7 +9,7 @@ After=ngrok.service
 Type=oneshot
 # Wait 2 seconds before the unit starts.
 ExecStartPre=/bin/sleep 2
-ExecStart=/usr/bin/python3 /home/<user>/workdir/development/python/ngrok.py # change script file
+ExecStart=/usr/bin/python3 /home/<user>/workdir/development/python/main.py # change script file
 RemainAfterExit=yes
 
 [Install]
