@@ -13,14 +13,16 @@ headers = {
 }
 
 def getPort():
-    global ngrok_port
-    f = open('/var/log/ngrok.log', 'r')
-    ngrok_port = re.findall("\d.tcp.\w\w.ngrok.io:.{5}$", f.read(), re.DOTALL) # Regex for find ngrok.io pattern
-    return ngrok_port
+    global last_line
+    #global ngrok_port
+    f = open('/var/log/ngrok/ngrok.log', 'r')
+    ngrok_port = re.findall("\d.tcp.\w\w.ngrok.io:.{5}", f.read(), re.DOTALL) # Regex for find ngrok.io pattern
+    last_line = ngrok_port[-1]
+    return last_line
 
 def sendMessages():
     messages = f"""Ngrok New Tunnel: ✅✅✅
-<code>{ngrok_port}</code> """
+<code>{last_line}</code> """
     url_encode = urllib.parse.quote_plus(str(messages))
     print("Send this messages to telegram\n",messages)
     response = requests.post(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={messageID}&text={url_encode}&parse_mode={typeText}", headers=headers)
