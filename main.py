@@ -3,14 +3,20 @@ import re
 import urllib
 
 # global variable
-token     = "<telegram_token>"
-messageID = "<group/messageID>"
+token     = ""
+messageID = ""
 typeText  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
 headers = {
     "accept": "application/json",
     "content-type": "application/json",
     "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SAMSUNG-SM-N900A Build/LRX21V)",
 }
+# if token and message 0 exit script
+if (len(token + messageID) == 0):
+    print(f"Please add token & message id")
+    exit()
+else:
+    pass
 
 def getPort():
     global last_line
