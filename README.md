@@ -1,25 +1,33 @@
-# ngrok-notification telegram
+**Notes: this script only work and already testing on ubuntu-22.04 jammy
 
-0. change value from all script with your credentials.
+### Step for installation:
 
-1. installing depedencies requirements
+1. Setup your ngrok token, visit this site: https://dashboard.ngrok.com/get-started/setup
+
+`$ ngrok config add-authtoken <your_token>`
+
+2. Running installation script
+ 
+`$ bash install.sh`
+
+3. Setup telegram chat bot token & chat id
+
+`$ vi /opt/ngrok/main.py`
+
+Add telegram token and chat id:
+
 ```
-pip3 install -r requirements.txt
+token     = "<telegram bot token>"
+messageID = "<chat id>"
 ```
 
-2. copy your ngrok config manifest into your local config.
-```bash
-$ ngrok config check
-$ cp ngrok.yaml $HOME/.config/ngrok/ngrok.yml
-```
+OR visit this site:
+- https://www.alphr.com/find-chat-id-telegram/
+- https://www.siteguarding.com/en/how-to-get-telegram-bot-api-token
 
-3. copy ngrok service, and running ngrok service
-```bash
-$ sudo cp ngrok.service ngrok-listener.service /etc/systemd/system/
-$ sudo systemctl daemon-reload && sudo systemctl enable --now ngrok.service && sudo systemctl enable --now ngrok.service ngrok-listener.service
-```
+4. Restart ngrok
 
-4. running bot
-```bash
-$ python3 main.py
-```
+`$ sudo systemctl restart ngrok.service ngrok-listener.service`
+
+### Final results:
+- https://i.ibb.co/9Hzr9KB/ngrok.png
