@@ -30,4 +30,4 @@ OR visit this site:
 `$ sudo systemctl restart ngrok.service ngrok-listener.service`
 
 ### Final results:
-- https://i.ibb.co/9Hzr9KB/ngrok.png
+- ![image](https://user-images.githubusercontent.com/39956298/214226252-acd91a5c-1c2c-4447-8060-63928272177b.png)
