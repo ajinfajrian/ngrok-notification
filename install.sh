@@ -37,7 +37,7 @@ def getPort():
     return hostname, port
 
 def sendMessages():
-    messages = f"""New Tunnel: ✅✅✅
+    messages = f"""New Tunnel: ✅
 <code>ssh {hostname} -p {port}</code> """
     url_encode = urllib.parse.quote_plus(str(messages))
     print("Send this messages to telegram\n",messages)
@@ -52,7 +52,7 @@ EOF
 	cat << EOF | sudo tee /etc/systemd/system/ngrok.service >/dev/null
 [Unit]
 Description=ngrok
-After=network.target
+After=network.target network-online.target
 
 [Service]
 ExecStart=ngrok start --config=/home/$USER/.config/ngrok/ngrok.yml ssh-access
@@ -72,12 +72,12 @@ Description=Service for listening ngrok service
 # disable this service if ngrok got stop
 BindsTo=ngrok.service
 # waits to be started before this service is started
-After=ngrok.service
+After=ngrok.service network.target network-online.target
 
 [Service]
 Type=oneshot
-# Wait 2 seconds before the unit starts.
-ExecStartPre=/bin/sleep 2
+# Wait 13 seconds before the unit starts.
+ExecStartPre=/bin/sleep 13
 ExecStart=/usr/bin/python3 /opt/ngrok/main.py
 RemainAfterExit=yes
 
