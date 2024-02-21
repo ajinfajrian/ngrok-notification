@@ -1,23 +1,22 @@
 #!/usr/bin/python3
 
-from datetime import datetime
 import requests
 import re
 import urllib
 
 # global variable
-token     = ""
-messageID = "" # group
+tg_token     = ""
+tg_message = ""
 
-typeText  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
+tg_format  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
 headers = {
     "accept": "application/json",
     "content-type": "application/json",
     "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SAMSUNG-SM-N900A Build/LRX21V)",
 }
 
-if (len(token + messageID) == 0):
-    print(f"Please add token & message id")
+if (len(tg_token + tg_message) == 0):
+    print(f"Please add telegram token & message id")
     exit()
 else:
     pass
@@ -30,19 +29,12 @@ def getPort():
     return hostname, port
 
 def sendMessages():
-    messages = f"""New Tunnel: ✅✅✅
+    messages = f"""New Tunnel: ✅
 <code>ssh {hostname} -p {port}</code> """
     url_encode = urllib.parse.quote_plus(str(messages))
-    response = requests.post(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={messageID}&text={url_encode}&parse_mode={typeText}", headers=headers)
-
-    log = f"""Send this messages to telegram
-{messages}
-{response.text}
-================================================================================ """
-    now = datetime.now()
-    wib = now.strftime("%d/%m/%Y %H:%M:%S")
-    with open('/var/log/ngrok/connection.log', 'a') as f:
-        print(wib, '-', log, file=f)
+    print("Send this messages to telegram\n",messages)
+    response = requests.post(f"https://api.telegram.org/bot{tg_token}/sendMessage?chat_id={tg_message}&text={url_encode}&parse_mode={tg_format}", headers=headers)
+    print(response.text)
 
 
 if __name__ == "__main__":
