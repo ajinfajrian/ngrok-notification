@@ -1,7 +1,24 @@
 #!/bin/bash
 
+osChecking(){
+    os_name=$(cat /etc/os-release | awk -F '=' '/^NAME/{print $2}' | tr -d '"')
+    if [ "$os_name" == "Ubuntu" ]
+    then
+            echo "===== System is ubuntu ====="
+            echo "Installing depedencies ..."
+            sudo apt install -y acl python3-pip >/dev/null
+    elif [ "$os_name" == "AlmaLinux" ] || [ "$os_name" == "CentOS" ] || [ "$os_name" == "RockyLinux" ] | [ "$os_name" == "Red Hat Enterprise Linux" ]
+    then
+            echo "===== System is rhel distribution ====="
+            echo "Installing depedencies ..."
+            sudo dnf install -y acl python3-pip >/dev/null
+    else
+            echo "your linux distribution is not support"
+            exit 1
+    fi
+}
+
 addFile(){
-	sudo apt install acl python3-pip -y >/dev/null
 	pip3 install regex urllib3 >/dev/null
 	sudo mkdir -p /opt/ngrok/ && mkdir -p /home/$USER/.config/ngrok/
 	sudo setfacl -m user:$USER:rwx -R /opt/ngrok/
@@ -13,18 +30,18 @@ import re
 import urllib
 
 # global variable
-token     = ""
-messageID = ""
+tg_token     = ""
+tg_chat_id = ""
 
-typeText  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
+tg_format  = "HTML" # Markdown / HTML, default=Markdown but html more smooth than markdown
 headers = {
     "accept": "application/json",
     "content-type": "application/json",
     "User-Agent": "Mozilla/5.0 (Linux; Android 5.0; SAMSUNG-SM-N900A Build/LRX21V)",
 }
 
-if (len(token + messageID) == 0):
-    print(f"Please add token & message id")
+if (len(tg_token + tg_chat_id) == 0):
+    print(f"Please add telegram token & chat id")
     exit()
 else:
     pass
@@ -41,7 +58,7 @@ def sendMessages():
 <code>ssh {hostname} -p {port}</code> """
     url_encode = urllib.parse.quote_plus(str(messages))
     print("Send this messages to telegram\n",messages)
-    response = requests.post(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={messageID}&text={url_encode}&parse_mode={typeText}", headers=headers)
+    response = requests.post(f"https://api.telegram.org/bot{tg_token}/sendMessage?chat_id={tg_chat_id}&text={url_encode}&parse_mode={tg_format}", headers=headers)
     print(response.text)
 
 
@@ -97,33 +114,23 @@ tunnels:
 EOF
 }
 
-ngrokChecking(){
-	sudo mkdir -p /var/log/ngrok/ && sudo touch /var/log/ngrok/ngrok.log
-    ngrokInstallation=$(dpkg --get-selections | grep -o ngrok)
-    if [[ $ngrokInstallation == "ngrok" ]]
-    then
-        :
-    else
-        echo "ngrok is not installed, try to installing"
-        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install -y ngrok
-    fi
-}
-
 mkdir -p /home/$USER/.config/ngrok/
+sudo mkdir -p /var/log/ngrok/ && sudo touch /var/log/ngrok/ngrok.log
 tokenChecking=/home/$USER/.config/ngrok/ngrok.yml
 if [[ -f "$tokenChecking" ]]
 then
+    echo "===== OS Checking ====="
+    osChecking
 	echo "===== Setup File ====="
 	sed -i '{/region:/,+8d}' /home/$USER/.config/ngrok/ngrok.yml
 	addFile
 	echo "===== Check & Install Ngrok Service ====="
-	ngrokChecking
 	sudo systemctl daemon-reload && sudo systemctl enable --now ngrok.service ngrok-listener.service
 	sudo chown $USER:$USER /var/log/ngrok/ngrok.log
 else
-	ngrokChecking
 	echo "Plase add your ngrok token. visit: https://dashboard.ngrok.com/get-started/setup"
 	echo "example: ngrok config add-authtoken xXx"
 	exit 0
 fi
 echo "===== Ngrok Installed ====="
+echo "===== Don't forget to run your python script on /opt/ngrok/main.py"
