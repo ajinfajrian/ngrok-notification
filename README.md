@@ -1,5 +1,3 @@
-**Notes: this script only work and already testing on ubuntu-22.04 jammy
-
 ### Step for installation:
 
 1. Setup your ngrok token, visit this site: https://dashboard.ngrok.com/get-started/setup
@@ -17,8 +15,8 @@
 Add telegram token and chat id:
 
 ```
-token     = "<telegram bot token>"
-messageID = "<chat id>"
+tg_token     = "<telegram bot token>"
+tg_chat_id = "<chat id>"
 ```
 
 OR visit this site:
