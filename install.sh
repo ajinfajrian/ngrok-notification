@@ -72,7 +72,7 @@ Description=ngrok
 After=network.target network-online.target
 
 [Service]
-ExecStart=ngrok start --config=/home/$USER/.config/ngrok/ngrok.yml ssh-access
+ExecStart=ngrok start --config=/home/$USER/.config/ngrok/ngrok.yml ssh
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 IgnoreSIGPIPE=true
@@ -103,14 +103,14 @@ RemainAfterExit=yes
 WantedBy=ngrok.service
 EOF
     cat << EOF | tee -a /home/$USER/.config/ngrok/ngrok.yml >/dev/null
-region: ap
-log_level: info
-log_format: logfmt
-log: /var/log/ngrok/ngrok.log
-tunnels:
-  ssh-access:
-    addr: 22
-    proto: tcp
+  log_level: info
+  log_format: logfmt
+  log: /var/log/ngrok/ngrok.log
+endpoints:
+  - name: ssh
+    url: tcp://
+    upstream:
+      url: 22
 EOF
 }
 
